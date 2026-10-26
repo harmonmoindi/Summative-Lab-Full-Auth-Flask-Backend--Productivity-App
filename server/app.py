@@ -1,8 +1,10 @@
+import os
+from functools import wraps
+
 from flask import Flask, request, session
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
 from sqlalchemy.exc import IntegrityError
-from functools import wraps
 
 from models import db, bcrypt, User, Note
 
@@ -11,8 +13,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
 
-# Signs the session cookie. Placeholder for development only.
-app.secret_key = 'dev-only-change-me'
+# Signs the session cookie. Set SECRET_KEY in the environment for real use;
+# the fallback is for local development only.
+app.secret_key = os.environ.get('SECRET_KEY', 'dev-only-change-me')
 
 db.init_app(app)
 bcrypt.init_app(app)
